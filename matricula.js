@@ -1,17 +1,15 @@
-const matriculas = [
-  { id: 1, curso: "JavaScript Avançado", aluno: "Alice" },
-  { id: 2, curso: "React do Zero", aluno: "Bob" },
-  { id: 3, curso: "JavaScript Avançado", aluno: "Carlos" },
-  { id: 4, curso: "Node.js para Backend", aluno: "Daniela" },
-  { id: 5, curso: "React do Zero", aluno: "Eduardo" },
-];
-
 function getTotalAlunosPorCurso(matriculas) {
+  // Usando reduce para criar o objeto { "curso": totalAlunos}
   const totalMatriculas = matriculas.reduce((total, matricula) => {
-    if(total[matricula.curso] === undefined) {
-        total[matricula.curso] = 0;
+    const { curso } = matricula;
+
+    // Se ainda não achamos nenhuma matrícula desse curso antes começamos com 0
+    if (total[curso] === undefined) {
+      total[curso] = 0;
     }
-    total[matricula.curso] += 1;
+
+    // Adiciona +1 ao total do curso atual
+    total[curso]++;
     return total;
   }, {});
   return totalMatriculas;
@@ -20,6 +18,3 @@ function getTotalAlunosPorCurso(matriculas) {
 export default {
   getTotalAlunosPorCurso,
 };
-
-const total = getTotalAlunosPorCurso(matriculas);
-console.log(total)
