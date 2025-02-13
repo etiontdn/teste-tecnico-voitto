@@ -14,7 +14,6 @@ function getTotalAlunosPorCurso(matriculas) {
   }, {});
   return totalMatriculas;
 }
-
-export default {
-  getTotalAlunosPorCurso,
-};
+module.exports = {
+    getTotalAlunosPorCurso
+}
