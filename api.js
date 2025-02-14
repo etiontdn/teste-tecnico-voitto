@@ -7,6 +7,26 @@ const port = 3000;
 // Gerador de Ids únicos:
 const uid = new ShortUniqueId({ length: 10 });
 
+function carregaCursos(res, callback) {
+    fs.readFile("./cursos.json", function (err, data) {
+        if (err) {
+            return res
+                .status(500)
+                .send({ message: "Erro ao carregar o arquivo de cursos." });
+        }
+        callback(data);
+    });
+}
+
+function salvaCursos(val, msg, msgErro) {
+    fs.writeFile("./cursos.json", val, (err) => {
+        if (err) {
+            return res.status(500).send({ message: msgErro });
+        }
+        res.status(200).send({ message: msg });
+    });
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -147,7 +167,8 @@ app.delete("/cursos/:id", (req, res) => {
                     "Curso com o id: " + req.params.id + " não foi encontrado.",
             });
         }
-        json.splice(req.params.id, 1);
+
+        delete json[req.params.id];
         fs.writeFile("./cursos.json", JSON.stringify(json), (err) => {
             if (err) {
                 return res
