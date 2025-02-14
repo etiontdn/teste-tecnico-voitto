@@ -43,12 +43,32 @@ app.post("/cursos", (req, res) => {
 });
 
 app.get("/cursos", (req, res) => {
-    res.status(200).send({ message: "Lista de cursos retornada com sucesso!" });
+    fs.readFile("./cursos.json", function (err, data) {
+        if (err) {
+            return res
+                .status(500)
+                .send({ message: "Erro ao carregar o arquivo de cursos." });
+        }
+        const json = JSON.parse(data);
+        res.setHeader("Content-Type", "application/json");
+        return res.status(200).send(JSON.stringify(json));
+    });
 });
 
 app.get("/cursos/:id", (req, res) => {
-    res.status(200).send({
-        message: `Curso com id ${req.params.id} retornado com sucesso!`,
+    fs.readFile("./cursos.json", function (err, data) {
+        if (err) {
+            return res
+                .status(500)
+                .send({ message: "Erro ao carregar o arquivo de cursos." });
+        }
+        const json = JSON.parse(data);
+        const curso = json[req.params.id];
+        if (curso === undefined) {
+            return res.status(404).send({ message: "Curso com o id: " + req.params.id + " não foi encontrado." })
+        }
+        res.setHeader("Content-Type", "application/json");
+        return res.status(200).send(JSON.stringify(curso));
     });
 });
 
