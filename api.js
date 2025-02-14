@@ -18,7 +18,7 @@ function carregaCursos(res, callback) {
     });
 }
 
-function salvaCursos(val, msg, msgErro) {
+function salvaCursos(res, val, msg, msgErro) {
     fs.writeFile("./cursos.json", val, (err) => {
         if (err) {
             return res.status(500).send({ message: msgErro });
@@ -43,24 +43,16 @@ app.post("/cursos", (req, res) => {
         cargaHoraria !== undefined
     ) {
         const curso = { nome, descricao, cargaHoraria };
-        fs.readFile("./cursos.json", function (err, data) {
-            if (err) {
-                return res
-                    .status(500)
-                    .send({ message: "Erro ao carregar o arquivo de cursos." });
-            }
+        carregaCursos(res, (data) => {
             const json = JSON.parse(data);
             const novoId = uid.rnd();
             json[novoId] = curso;
-
-            fs.writeFile("./cursos.json", JSON.stringify(json), (err) => {
-                if (err) {
-                    return res
-                        .status(500)
-                        .send({ message: "Erro ao salvar o curso." });
-                }
-                res.status(201).send({ message: "Curso criado com sucesso!" });
-            });
+            salvaCursos(
+                res,
+                JSON.stringify(json),
+                "Curso criado com sucesso!",
+                "Erro ao salvar o curso."
+            );
         });
     } else {
         res.status(400).send({
@@ -71,12 +63,7 @@ app.post("/cursos", (req, res) => {
 
 app.get("/cursos", (req, res) => {
     //Lê o arquivo e devolve ele inteiro no formato JSON
-    fs.readFile("./cursos.json", function (err, data) {
-        if (err) {
-            return res
-                .status(500)
-                .send({ message: "Erro ao carregar o arquivo de cursos." });
-        }
+    carregaCursos(res, (data) => {
         const json = JSON.parse(data);
         res.setHeader("Content-Type", "application/json");
         return res.status(200).send(JSON.stringify(json));
@@ -85,12 +72,7 @@ app.get("/cursos", (req, res) => {
 
 app.get("/cursos/:id", (req, res) => {
     //Lê o arquivo e tenta devolver apenas o curso com o id
-    fs.readFile("./cursos.json", function (err, data) {
-        if (err) {
-            return res
-                .status(500)
-                .send({ message: "Erro ao carregar o arquivo de cursos." });
-        }
+    carregaCursos(res, (data) => {
         const json = JSON.parse(data);
         const curso = json[req.params.id];
         //Se o curso não existe devolve 404
@@ -119,12 +101,7 @@ app.put("/cursos/:id", (req, res) => {
     ) {
         return res.status(400).send({ message: `Pedido sem mudanças.` });
     }
-    fs.readFile("./cursos.json", function (err, data) {
-        if (err) {
-            return res
-                .status(500)
-                .send({ message: "Erro ao carregar o arquivo de cursos." });
-        }
+    carregaCursos(res, (data) => {
         const json = JSON.parse(data);
         const curso = json[req.params.id];
         if (curso === undefined) {
@@ -138,27 +115,19 @@ app.put("/cursos/:id", (req, res) => {
         if (descricao != undefined) curso.descricao = descricao;
         if (cargaHoraria != undefined) curso.cargaHoraria = cargaHoraria;
 
-        json[req.params.id] = curso;
-
         // Escreve de volta no arquivo no espaço do id especificado
-        fs.writeFile("./cursos.json", JSON.stringify(json), (err) => {
-            if (err) {
-                return res
-                    .status(500)
-                    .send({ message: "Erro ao atualizar o curso." });
-            }
-            res.status(200).send({ message: "Curso atualizado com sucesso!" });
-        });
+        json[req.params.id] = curso;
+        salvaCursos(
+            res,
+            JSON.stringify(json),
+            "Curso atualizado com sucesso!",
+            "Erro ao atualizar o curso."
+        );
     });
 });
 
 app.delete("/cursos/:id", (req, res) => {
-    fs.readFile("./cursos.json", function (err, data) {
-        if (err) {
-            return res
-                .status(500)
-                .send({ message: "Erro ao carregar o arquivo de cursos." });
-        }
+    carregaCursos(res, (data) => {
         const json = JSON.parse(data);
         const curso = json[req.params.id];
         if (curso === undefined) {
@@ -169,15 +138,8 @@ app.delete("/cursos/:id", (req, res) => {
         }
 
         delete json[req.params.id];
-        fs.writeFile("./cursos.json", JSON.stringify(json), (err) => {
-            if (err) {
-                return res
-                    .status(500)
-                    .send({ message: "Erro ao deletar o curso." });
-            }
-            res.status(200).send({ message: "Curso deletado com sucesso!" });
-        });
-    });
+        salvaCursos(res, JSON.stringify(json), "Curso deletado com sucesso!", "Erro ao deletar o curso.")
+    })
 });
 
 app.post("/matriculas", (req, res) => {
