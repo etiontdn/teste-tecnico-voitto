@@ -2,7 +2,7 @@
 import TabelaDeCursos from "./tabela.jsx";
 import Matricula from "./matricula.jsx";
 import Detalhes from "./detalhes.jsx"
-import { Container, Grid, Space } from "@mantine/core"
+import { Container, Grid, Space, Title } from "@mantine/core"
 import { useState } from "react";
 
 export default function Page() {
@@ -10,16 +10,19 @@ export default function Page() {
 
     return (
         <Container size="lg">
-          <Grid gutter="md">
-            <Grid.Col span={8}>
-              <TabelaDeCursos setCursoSelecionado={setCursoSelecionado} />
-              <Space h="md" />
-              <Detalhes cursoSelecionado={cursoSelecionado} />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Matricula />
-            </Grid.Col>
-          </Grid>
+            <Space h="xl" />
+            <Title align="center" order={1}>Lista de Cursos e Matrículas</Title>
+            <Space h="xl" />
+            <Grid gutter="md">
+                <Grid.Col span={8}>
+                    <TabelaDeCursos setCursoSelecionado={setCursoSelecionado} />
+                    <Space h="md" />
+                    <Detalhes cursoSelecionado={cursoSelecionado} />
+                </Grid.Col>
+                <Grid.Col span={4}>
+                    <Matricula />
+                </Grid.Col>
+            </Grid>
         </Container>
-      )
+    )
 }

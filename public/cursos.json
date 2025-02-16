@@ -1,1 +1,12 @@
-{"4WSHoHC8rq":{"nome":"Novo Curso","descricao":"Nova descricao","cargaHoraria":"20 Horas por semana"},"LQQx0bdH5o":{"nome":"outro nome","descricao":"DESCRIÇão descritiva","cargaHoraria":"12"}}
+{
+  "4WSHoHC8rq": {
+    "nome": "Desenvolvimento Web Moderno",
+    "descricao": "Aprenda a criar websites dinâmicos e responsivos com as tecnologias mais atuais do mercado.",
+    "cargaHoraria": "120"
+  },
+  "LQQx0bdH5o": {
+    "nome": "Marketing Digital Avançado",
+    "descricao": "Domine as estratégias de marketing online para aumentar o alcance e o engajamento da sua marca.",
+    "cargaHoraria": "90"
+  }
+}
