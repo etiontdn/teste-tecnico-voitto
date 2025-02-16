@@ -16,12 +16,12 @@ export default function Page() {
             </Title>
             <Space h="xl" />
             <Grid gutter="md">
-                <Grid.Col span={8}>
+                <Grid.Col span={{base: 12, sm: 6}}>
                     <TabelaDeCursos setCursoSelecionado={setCursoSelecionado} />
                     <Space h="md" />
                     <Detalhes cursoSelecionado={cursoSelecionado} />
                 </Grid.Col>
-                <Grid.Col span={4}>
+                <Grid.Col span={{base: 12, sm: 6}}>
                     <Matricula />
                 </Grid.Col>
             </Grid>
