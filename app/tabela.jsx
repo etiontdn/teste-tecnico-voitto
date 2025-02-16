@@ -1,10 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 function Curso({ id, nome, descricao, cargaHoraria, setCursoSelecionado }) {
+    const clique = (event) => {
+        setCursoSelecionado(id)
+    }
     return (
         <tr>
             <td
-                onClick={(event) => setCursoSelecionado(id)}
+                onClick={clique}
+                value={id}
                 style={{ fontWeight: "bold" }}
             >
                 {nome}
