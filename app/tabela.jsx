@@ -1,23 +1,30 @@
 "use client";
 import { useState, useEffect } from "react";
-function Curso({ nome, descricao, cargaHoraria }) {
+function Curso({ id, nome, descricao, cargaHoraria, setCursoSelecionado }) {
     return (
         <tr>
-            <td style={{ fontWeight: "bold" }}>{nome}</td>
+            <td
+                onClick={(event) => setCursoSelecionado(id)}
+                style={{ fontWeight: "bold" }}
+            >
+                {nome}
+            </td>
             <td>{descricao}</td>
             <td>{cargaHoraria}</td>
         </tr>
     );
 }
 
-function Tabela({ cursos }) {
+function Tabela({ cursos, setCursoSelecionado }) {
     cursos = Object.entries(cursos);
     const rows = cursos.map(([id, { nome, descricao, cargaHoraria }]) => (
         <Curso
             key={id}
+            id={id}
             nome={nome}
             descricao={descricao}
             cargaHoraria={cargaHoraria}
+            setCursoSelecionado={setCursoSelecionado}
         ></Curso>
     ));
     return (
@@ -59,7 +66,7 @@ function fetchCursos() {
     return cursos;
 }
 
-export default function TabelaDeCursos() {
+export default function TabelaDeCursos({ setCursoSelecionado }) {
     const [busca, setBusca] = useState("");
     const cursos = fetchCursos();
     const cursosFiltrados = Object.fromEntries(
@@ -70,7 +77,10 @@ export default function TabelaDeCursos() {
     return (
         <div className="tabela-container">
             <CampoDeBusca busca={busca} setBusca={setBusca}></CampoDeBusca>
-            <Tabela cursos={cursosFiltrados}></Tabela>
+            <Tabela
+                setCursoSelecionado={setCursoSelecionado}
+                cursos={cursosFiltrados}
+            ></Tabela>
         </div>
     );
 }
