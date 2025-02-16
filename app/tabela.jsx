@@ -1,90 +1,96 @@
 "use client";
+
 import { useState, useEffect } from "react";
+import { Table, TextInput, Paper, Title, Text } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
+
 function Curso({ id, nome, descricao, cargaHoraria, setCursoSelecionado }) {
-    const clique = (event) => {
-        setCursoSelecionado(id)
-    }
+    const clique = () => {
+        setCursoSelecionado(id);
+    };
+
     return (
-        <tr>
-            <td
-                onClick={clique}
-                value={id}
-                style={{ fontWeight: "bold" }}
-            >
-                {nome}
-            </td>
-            <td>{descricao}</td>
-            <td>{cargaHoraria}</td>
-        </tr>
+        <Table.Tr onClick={clique} style={{ cursor: "pointer" }}>
+            <Table.Td>
+                <Text fw={700}>{nome}</Text>
+            </Table.Td>
+            <Table.Td>{descricao}</Table.Td>
+            <Table.Td>{cargaHoraria}</Table.Td>
+        </Table.Tr>
     );
 }
 
 function Tabela({ cursos, setCursoSelecionado }) {
-    cursos = Object.entries(cursos);
-    const rows = cursos.map(([id, { nome, descricao, cargaHoraria }]) => (
-        <Curso
-            key={id}
-            id={id}
-            nome={nome}
-            descricao={descricao}
-            cargaHoraria={cargaHoraria}
-            setCursoSelecionado={setCursoSelecionado}
-        ></Curso>
-    ));
+    const rows = Object.entries(cursos).map(
+        ([id, { nome, descricao, cargaHoraria }]) => (
+            <Curso
+                key={id}
+                id={id}
+                nome={nome}
+                descricao={descricao}
+                cargaHoraria={cargaHoraria}
+                setCursoSelecionado={setCursoSelecionado}
+            />
+        )
+    );
+
     return (
-        <table>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Descrição</th>
-                    <th>Carga Horária (em horas)</th>
-                </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-        </table>
+        <Table striped highlightOnHover withTableBorder withColumnBorders>
+            <Table.Thead>
+                <Table.Tr>
+                    <Table.Th>Nome</Table.Th>
+                    <Table.Th>Descrição</Table.Th>
+                    <Table.Th>Carga Horária (em horas)</Table.Th>
+                </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
     );
 }
 
 function CampoDeBusca({ busca, setBusca }) {
-    const atualizar = (event) => {
-        setBusca(event.target.value);
-    };
-
     return (
-        <input
+        <TextInput
             placeholder="Nome do Curso"
-            type="text"
-            onChange={atualizar}
             value={busca}
-        ></input>
+            onChange={(event) => setBusca(event.currentTarget.value)}
+            leftSection={<IconSearch size={16} />}
+            mb="md"
+        />
     );
 }
 
-function fetchCursos() {
+function useCursos() {
     const [cursos, setCursos] = useState({});
+
     useEffect(() => {
         fetch("http://localhost:8080/cursos")
             .then((response) => response.json())
             .then((data) => setCursos(data));
     }, []);
+
     return cursos;
 }
 
 export default function TabelaDeCursos({ setCursoSelecionado }) {
     const [busca, setBusca] = useState("");
-    const cursos = fetchCursos();
+    const cursos = useCursos();
     const cursosFiltrados = Object.fromEntries(
-        Object.entries(cursos).filter(([id, curso]) => {
-            return curso.nome.includes(busca);
+        Object.entries(cursos).filter(([_, curso]) => {
+            return curso.nome.toLowerCase().includes(busca.toLowerCase());
         })
     );
+
     return (
-        <div className="tabela-container">
-            <CampoDeBusca busca={busca} setBusca={setBusca}></CampoDeBusca>
+        <Paper shadow="sm" p="md" withBorder>
+            <Title order={2} mb="md">
+                Lista de Cursos
+            </Title>
+            <CampoDeBusca busca={busca} setBusca={setBusca} />
             <Tabela
                 setCursoSelecionado={setCursoSelecionado}
                 cursos={cursosFiltrados}
-            ></Tabela>
-        </div>
+            />
+        </Paper>
     );
 }
