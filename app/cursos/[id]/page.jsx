@@ -9,6 +9,11 @@ import {
     Text,
 } from "@mantine/core";
 
+/*
+Isto é apenas imitação já que é impossível usar getServerSideProps
+com page router no nextjs
+*/
+
 async function getServerSideProps(id) {
     let res = await fetch("http://localhost:8080/cursos/" + id);
     const curso = await res.json();
