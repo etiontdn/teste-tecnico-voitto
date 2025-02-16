@@ -33,9 +33,9 @@ export default function Form({ id, curso }) {
             }),
         }).then((res) => {
             if (res.ok) {
-                window.location.reload()
+                window.location.reload();
             } else {
-                console.error("Erro ao atualizar o curso")
+                console.error("Erro ao atualizar o curso");
             }
         });
     };

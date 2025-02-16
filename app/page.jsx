@@ -1,8 +1,8 @@
-"use client"
+"use client";
 import TabelaDeCursos from "./tabela.jsx";
 import Matricula from "./matricula.jsx";
-import Detalhes from "./detalhes.jsx"
-import { Container, Grid, Space, Title } from "@mantine/core"
+import Detalhes from "./detalhes.jsx";
+import { Container, Grid, Space, Title } from "@mantine/core";
 import { useState } from "react";
 
 export default function Page() {
@@ -11,7 +11,9 @@ export default function Page() {
     return (
         <Container size="lg">
             <Space h="xl" />
-            <Title align="center" order={1}>Lista de Cursos e Matrículas</Title>
+            <Title align="center" order={1}>
+                Lista de Cursos e Matrículas
+            </Title>
             <Space h="xl" />
             <Grid gutter="md">
                 <Grid.Col span={8}>
@@ -24,5 +26,5 @@ export default function Page() {
                 </Grid.Col>
             </Grid>
         </Container>
-    )
+    );
 }

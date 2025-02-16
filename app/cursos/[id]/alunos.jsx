@@ -1,6 +1,6 @@
 "use client";
 import { List, ListItem, Button, Box, SimpleGrid } from "@mantine/core";
-import { IconUser } from '@tabler/icons-react';
+import { IconUser } from "@tabler/icons-react";
 
 function makeCSV(nome, matriculas) {
     const arr = matriculas.map((v) =>
@@ -18,11 +18,11 @@ function makeCSV(nome, matriculas) {
     const blob = new Blob([data], {
         type: "text/csv;charset=utf-8;",
     });
-    const url = URL.createObjectURL(blob)
-    
-    var download = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    var download = document.createElement("a");
     download.href = url;
-    download.setAttribute('download', "alunos"+ nome + ".csv");
+    download.setAttribute("download", "alunos" + nome + ".csv");
     download.click();
 
     return url;

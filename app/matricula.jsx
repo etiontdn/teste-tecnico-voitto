@@ -57,7 +57,7 @@ function Matricula() {
                     color: "green",
                     title: "Sucesso!",
                     message: "Sucesso ao matricular o aluno: " + nomeAluno,
-                    style: { width: "360px", top:0, right:0  },
+                    style: { width: "360px", top: 0, right: 0 },
                 });
             } else {
                 console.error(
@@ -71,7 +71,7 @@ function Matricula() {
                     message:
                         "Ocorreu algum erro ao matrícular o aluno: " +
                         nomeAluno,
-                    style: { width: "360px", top:0, right:0 },
+                    style: { width: "360px", top: 0, right: 0 },
                 });
             }
         });

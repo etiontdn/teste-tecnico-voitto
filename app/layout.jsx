@@ -1,6 +1,6 @@
 import "@mantine/core/styles.css";
-import '@mantine/notifications/styles.css';
-import { Notifications } from '@mantine/notifications';
+import "@mantine/notifications/styles.css";
+import { Notifications } from "@mantine/notifications";
 
 import {
     ColorSchemeScript,
@@ -9,8 +9,8 @@ import {
 } from "@mantine/core";
 
 export const metadata = {
-    title: "My Mantine app",
-    description: "I have followed setup instructions carefully",
+    title: "Cursos e Matrículas",
+    description: "Aplicação para gerenciamento de cursos e matrículas",
 };
 
 export default function RootLayout({ children }) {
@@ -20,9 +20,10 @@ export default function RootLayout({ children }) {
                 <ColorSchemeScript />
             </head>
             <body>
-                <MantineProvider style={{minHeight: "100vh"}}>
-                  <Notifications position="bottom-right"></Notifications>
-                  {children}</MantineProvider>
+                <MantineProvider style={{ minHeight: "100vh" }}>
+                    <Notifications position="bottom-right"></Notifications>
+                    {children}
+                </MantineProvider>
             </body>
         </html>
     );
