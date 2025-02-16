@@ -7,19 +7,52 @@ const port = 3000;
 // Gerador de Ids únicos:
 const uid = new ShortUniqueId({ length: 10 });
 
+function novoId(obj) {
+    //Cria ids randoms até achar um que não está no objeto
+    let id = uid.rnd();
+    while (obj.id !== undefined) {
+        id = uid.rnd();
+    }
+    return id;
+}
+
 function carregaCursos(res, callback) {
+    //Carrega os cursos ou exibe um erro se não conseguir
     fs.readFile("./cursos.json", function (err, data) {
         if (err) {
             return res
                 .status(500)
                 .send({ message: "Erro ao carregar o arquivo de cursos." });
         }
-        callback(data);
+        return callback(data);
     });
 }
 
 function salvaCursos(res, val, msg, msgErro) {
+    //Salva os cursos ou exibe um erro definido se não conseguir
     fs.writeFile("./cursos.json", val, (err) => {
+        if (err) {
+            return res.status(500).send({ message: msgErro });
+        }
+        res.status(200).send({ message: msg });
+    });
+}
+
+function carregaMatriculas(res, callback) {
+    //Carrega as matrículas ou exibe um erro se não conseguir
+    fs.readFile("./matriculas.json", function (err, data) {
+        if (err) {
+            return res
+                .status(500)
+                .send({ message: "Erro ao carregar o arquivo de matrículas." });
+        }
+        return callback(data);
+    });
+}
+
+function salvaMatriculas(res, val, msg, msgErro) {
+    //Salva as matrículas ou exibe um erro se não conseguir
+    fs.writeFile("./matriculas.json", val, (err) => {
         if (err) {
             return res.status(500).send({ message: msgErro });
         }
@@ -45,8 +78,8 @@ app.post("/cursos", (req, res) => {
         const curso = { nome, descricao, cargaHoraria };
         carregaCursos(res, (data) => {
             const json = JSON.parse(data);
-            const novoId = uid.rnd();
-            json[novoId] = curso;
+            const id = novoId(json);
+            json[id] = curso;
             salvaCursos(
                 res,
                 JSON.stringify(json),
@@ -127,6 +160,7 @@ app.put("/cursos/:id", (req, res) => {
 });
 
 app.delete("/cursos/:id", (req, res) => {
+    // Carrega o arquivo e deleta o id junto com seus dados
     carregaCursos(res, (data) => {
         const json = JSON.parse(data);
         const curso = json[req.params.id];
@@ -137,18 +171,99 @@ app.delete("/cursos/:id", (req, res) => {
             });
         }
 
-        delete json[req.params.id];
-        salvaCursos(res, JSON.stringify(json), "Curso deletado com sucesso!", "Erro ao deletar o curso.")
-    })
+        // Deletar também todas as matrículas do curso:
+        const idCurso = req.params.id;
+
+        carregaMatriculas(res, (data) => {
+            const matriculas = JSON.parse(data);
+            // filtra matriculas para pegar só aquelas que não tem cursoId igual ao procurado
+            // e retorna para o objeto {"id":dados}
+            const matriculasRestantes = Object.fromEntries(
+                Object.entries(matriculas).filter(
+                    ([key, matricula]) => matricula.idCurso != idCurso
+                )
+            );
+
+            fs.writeFile(
+                "./matriculas.json",
+                JSON.stringify(matriculasRestantes),
+                (err) => {
+                    if (err) {
+                        return res.status(500).send({
+                            message: "Erro ao deletar matrículas do curso.",
+                        });
+                    }
+                    delete json[req.params.id];
+                    salvaCursos(
+                        res,
+                        JSON.stringify(json),
+                        "Curso deletado com sucesso!",
+                        "Erro ao deletar o curso."
+                    );
+                }
+            );
+        });
+    });
 });
 
 app.post("/matriculas", (req, res) => {
-    res.status(201).send({ message: "Matrícula criada com sucesso!" });
+    const idCurso = req.body.idCurso;
+
+    // Checar se o idCurso é válido:
+    carregaCursos(res, (data) => {
+        const json = JSON.parse(data);
+        const curso = json[idCurso];
+        if (curso === undefined) {
+            return res.status(400).send({
+                message: "Id de curso inválido.",
+            });
+        }
+
+        const nomeAluno = req.body.nomeAluno;
+        if (idCurso !== undefined && nomeAluno !== undefined) {
+            carregaMatriculas(res, (data) => {
+                const json = JSON.parse(data);
+                const matricula = { idCurso, nomeAluno };
+                const id = novoId(json);
+
+                json[id] = matricula;
+                salvaMatriculas(
+                    res,
+                    JSON.stringify(json),
+                    "Matrícula criada com sucesso!",
+                    "Erro ao criar a matrícula"
+                );
+            });
+        } else {
+            res.status(400).send({
+                message: "Dados insuficientes para criar uma matrícula.",
+            });
+        }
+    });
 });
 
 app.get("/matriculas/:idCurso", (req, res) => {
-    res.status(200).send({
-        message: `Matrículas do curso com id ${req.params.idCurso} retornadas com sucesso!`,
+    const idCurso = req.params.idCurso;
+
+    // Checar se o idCurso é válido:
+    carregaCursos(res, (data) => {
+        const json = JSON.parse(data);
+        const curso = json[idCurso];
+        if (curso == undefined) {
+            return res.status(404).send({
+                message: `Curso com id: ${idCurso} não encontrado.`,
+            });
+        }
+        carregaMatriculas(res, (data) => {
+            const json = JSON.parse(data);
+            // filtra matriculas para pegar só aquelas que tem cursoId igual ao procurado
+            // e adiciona o id do aluno para os dados retornados
+            const matriculasDoCurso = Object.entries(json)
+                .filter(([key, matricula]) => matricula.idCurso === idCurso)
+                .map(([key, matricula]) => ({ id: key, ...matricula }));
+
+            res.status(200).send(matriculasDoCurso);
+        });
     });
 });
 
