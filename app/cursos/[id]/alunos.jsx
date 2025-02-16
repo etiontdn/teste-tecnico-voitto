@@ -1,4 +1,7 @@
-"use client"
+"use client";
+import { List, ListItem, Button, Box, SimpleGrid } from "@mantine/core";
+import { IconUser } from '@tabler/icons-react';
+
 function makeCSV(nome, matriculas) {
     const arr = matriculas.map((v) =>
         Object.entries(v).map(([key, val]) => val)
@@ -27,14 +30,25 @@ function makeCSV(nome, matriculas) {
 
 export default function Alunos({ nome, matriculas }) {
     return (
-        <div>
-            {matriculas.map(({ id, nomeAluno }) => (
-                <div key={id}>{nomeAluno}</div>
-            ))}
+        <Box sx={{ maxWidth: 300 }}>
+            <SimpleGrid cols={2} spacing="sm">
+                {matriculas.map(({ id, nomeAluno }) => (
+                    <Box key={id}>
+                        <List
+                            spacing="sm"
+                            size="sm"
+                            center
+                            icon={<IconUser size={16} color="blue" />}
+                        >
+                            <ListItem>{nomeAluno}</ListItem>
+                        </List>
+                    </Box>
+                ))}
+            </SimpleGrid>
 
-            <button onClick={(e) => makeCSV(nome, matriculas)}>
+            <Button onClick={(e) => makeCSV(nome, matriculas)} mt="md">
                 Baixar em CSV
-            </button>
-        </div>
+            </Button>
+        </Box>
     );
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Card, Text, Badge, Group, useMantineTheme, List } from '@mantine/core';
+import { IconUser } from '@tabler/icons-react';
 
 function fetchCurso(cursoSelecionado) {
     const [curso, setCurso] = useState({});
@@ -47,6 +48,7 @@ export default function Detalhes({ cursoSelecionado }) {
                 size="sm"
                 center
                 listStyleType="none"
+                icon={<IconUser size={16} color="blue" />}
             >
                 {matriculas.map((matricula) => (
                     <List.Item key={matricula.id}>{matricula.nomeAluno}</List.Item>

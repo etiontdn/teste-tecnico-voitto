@@ -1,5 +1,13 @@
-import Form from "./form.jsx"
-import Alunos from "./alunos.jsx"
+import Form from "./form.jsx";
+import Alunos from "./alunos.jsx";
+import {
+    Container,
+    Space,
+    Title,
+    SimpleGrid,
+    Paper,
+    Text,
+} from "@mantine/core";
 
 async function getServerSideProps(id) {
     let res = await fetch("http://localhost:8080/cursos/" + id);
@@ -10,15 +18,32 @@ async function getServerSideProps(id) {
 }
 
 export default async function Page({ params }) {
-    const id = (await params).id
-    const {curso, matriculas} = await getServerSideProps(id)
+    const id = (await params).id;
+    const { curso, matriculas } = await getServerSideProps(id);
     return (
-        <div>
-            <h1>{curso.nome}</h1>
-            <p>{curso.descricao}</p>
-            <p>{curso.cargaHoraria}</p>
-            <Alunos nome={curso.nome} matriculas={matriculas}></Alunos>
-            <Form curso={curso} id={id}></Form>
-        </div>
+        <Container size="lg">
+            <Space h="xl" />
+            <Title align="center" order={2}>
+                {curso.nome}
+            </Title>
+            <Space h="md" />
+
+            <Text size="lg" weight={500}>
+                {curso.descricao}
+            </Text>
+            <Space h="sm" />
+            <Text size="md" c="dimmed">
+                Carga Horária: {curso.cargaHoraria} horas
+            </Text>
+            <Space h="xl" />
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+                <Paper shadow="sm" p="md" withBorder>
+                    <Alunos nome={curso.nome} matriculas={matriculas} />
+                </Paper>
+                <Paper shadow="sm" p="md" withBorder>
+                    <Form curso={curso} id={id} />
+                </Paper>
+            </SimpleGrid>
+        </Container>
     );
 }

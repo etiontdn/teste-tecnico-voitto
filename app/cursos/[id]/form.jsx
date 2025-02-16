@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { TextInput, Textarea, Button, Box, NumberInput } from "@mantine/core";
+
 export default function Form({ id, curso }) {
     const [nome, setNome] = useState(curso.nome);
     const [descricao, setDescricao] = useState(curso.descricao);
@@ -13,8 +15,8 @@ export default function Form({ id, curso }) {
         setDescricao(event.target.value);
     };
 
-    const handleCargaHorariaChange = (event) => {
-        setCargaHoraria(event.target.value);
+    const handleCargaHorariaChange = (value) => {
+        setCargaHoraria(value);
     };
 
     const handleSubmit = (event) => {
@@ -39,29 +41,33 @@ export default function Form({ id, curso }) {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                name="nome"
-                id="nome"
-                value={nome}
-                onChange={handleNomeChange}
-            />
-            <textarea
-                type="textarea"
-                name="descricao"
-                id="descricao"
-                value={descricao}
-                onChange={handleDescricaoChange}
-            />
-            <input
-                type="number"
-                name="cargaHoraria"
-                id="cargaHoraria"
-                value={cargaHoraria}
-                onChange={handleCargaHorariaChange}
-            />
-            <button type="submit">Submit</button>
-        </form>
+        <Box sx={{ maxWidth: 300 }}>
+            <form onSubmit={handleSubmit}>
+                <TextInput
+                    label="Nome"
+                    placeholder="Nome do curso"
+                    value={nome}
+                    onChange={handleNomeChange}
+                    mt="md"
+                />
+                <Textarea
+                    label="Descrição"
+                    placeholder="Descrição do curso"
+                    value={descricao}
+                    onChange={handleDescricaoChange}
+                    mt="md"
+                />
+                <NumberInput
+                    label="Carga Horária"
+                    placeholder="Carga horária do curso"
+                    value={cargaHoraria}
+                    onChange={handleCargaHorariaChange}
+                    mt="md"
+                />
+                <Button type="submit" mt="md">
+                    Salvar
+                </Button>
+            </form>
+        </Box>
     );
 }
