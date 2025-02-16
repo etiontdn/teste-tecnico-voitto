@@ -1,11 +1,4 @@
-export async function getServerSideProps(context) {
-    let res = await fetch("http://localhost:8080/cursos/" + context.query.id);
-    const curso = await res.json();
-    res = await fetch("http://localhost:8080/matriculas/" + context.query.id);
-    const matriculas = await res.json();
-    return { props: { curso, matriculas } };
-}
-
+"use client"
 function makeCSV(nome, matriculas) {
     const arr = matriculas.map((v) =>
         Object.entries(v).map(([key, val]) => val)
@@ -32,18 +25,16 @@ function makeCSV(nome, matriculas) {
     return url;
 }
 
-export default function Page({ curso, matriculas }) {
+export default function Alunos({ nome, matriculas }) {
     return (
         <div>
-            <h1>{curso.nome}</h1>
-            <p>{curso.descricao}</p>
-            <p>{curso.cargaHoraria}</p>
-
             {matriculas.map(({ id, nomeAluno }) => (
                 <div key={id}>{nomeAluno}</div>
             ))}
 
-            <button onClick={(e) => makeCSV(curso.nome, matriculas)}>Baixar em CSV</button>
+            <button onClick={(e) => makeCSV(nome, matriculas)}>
+                Baixar em CSV
+            </button>
         </div>
     );
 }
