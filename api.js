@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const ShortUniqueId = require("short-unique-id");
 const fs = require("fs");
 const app = express();
@@ -60,6 +61,7 @@ function salvaMatriculas(res, val, msg, msgErro) {
     });
 }
 
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -208,10 +210,12 @@ app.delete("/cursos/:id", (req, res) => {
 
 app.post("/matriculas", (req, res) => {
     const idCurso = req.body.idCurso;
+    console.log(idCurso)
 
     // Checar se o idCurso é válido:
     carregaCursos(res, (data) => {
         const json = JSON.parse(data);
+        console.log(json)
         const curso = json[idCurso];
         if (curso === undefined) {
             return res.status(400).send({

@@ -34,19 +34,43 @@ function Tabela({ cursos }) {
     );
 }
 
+function CampoDeBusca({ busca, setBusca }) {
+    const atualizar = (event) => {
+        setBusca(event.target.value);
+    };
+
+    return (
+        <input
+            placeholder="Nome do Curso"
+            type="text"
+            onChange={atualizar}
+            value={busca}
+        ></input>
+    );
+}
+
 function fetchCursos() {
     const [cursos, setCursos] = useState({});
     useEffect(() => {
         fetch("http://localhost:8080/cursos")
             .then((response) => response.json())
             .then((data) => setCursos(data));
-    });
-    return cursos
+    }, []);
+    return cursos;
 }
 
 export default function TabelaDeCursos() {
-    const cursos = fetchCursos()
+    const [busca, setBusca] = useState("");
+    const cursos = fetchCursos();
+    const cursosFiltrados = Object.fromEntries(
+        Object.entries(cursos).filter(([id, curso]) => {
+            return curso.nome.includes(busca);
+        })
+    );
     return (
-        <Tabela cursos={cursos}></Tabela>
-    )
+        <div className="tabela-container">
+            <CampoDeBusca busca={busca} setBusca={setBusca}></CampoDeBusca>
+            <Tabela cursos={cursosFiltrados}></Tabela>
+        </div>
+    );
 }
