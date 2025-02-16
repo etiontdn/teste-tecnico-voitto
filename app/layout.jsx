@@ -1,4 +1,5 @@
 import "@mantine/core/styles.css";
+import '@mantine/notifications/styles.css';
 import { Notifications } from '@mantine/notifications';
 
 import {
@@ -19,8 +20,8 @@ export default function RootLayout({ children }) {
                 <ColorSchemeScript />
             </head>
             <body>
-                <MantineProvider>
-                  <Notifications></Notifications>
+                <MantineProvider style={{minHeight: "100vh"}}>
+                  <Notifications position="bottom-right"></Notifications>
                   {children}</MantineProvider>
             </body>
         </html>

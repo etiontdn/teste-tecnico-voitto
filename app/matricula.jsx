@@ -1,23 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Select, TextInput, Button, Paper, Title, Stack } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 
 function SelectMatricula({ cursos, setIdCurso }) {
-    cursos = Object.entries(cursos);
-    const options = cursos.map(([id, { nome }], i) => (
-        <option key={id} value={id}>
-            {nome}
-        </option>
-    ));
-
-    const atualizar = (event) => {
-        setIdCurso(event.target.value);
-    };
-
+    const options = Object.entries(cursos).map(([id, { nome }]) => ({
+        value: id,
+        label: nome,
+    }));
     return (
-        <select name="curso" defaultValue="" onChange={atualizar}>
-            <option value="" disabled hidden>Escolha o curso</option>
-            {options}
-        </select>
+        <Select
+            label="Curso"
+            placeholder="Escolha o curso"
+            data={options}
+            onChange={setIdCurso}
+            searchable
+            nothingfound="Nenhum curso encontrado"
+        />
     );
 }
 
@@ -48,42 +47,62 @@ function Matricula() {
     const [idCurso, setIdCurso] = useState("");
     const [nomeAluno, setNomeAluno] = useState("");
     const cursos = fetchCursos();
-    
+
     const submit = (event) => {
+        event.preventDefault();
         matricularAluno(idCurso, nomeAluno).then((response) => {
             if (response.ok) {
-                console.log("sucesso ao matricular o aluno: ", nomeAluno);
+                console.log("Sucesso ao matricular o aluno: ", nomeAluno);
+                notifications.show({
+                    color: "green",
+                    title: "Sucesso!",
+                    message: "Sucesso ao matricular o aluno: " + nomeAluno,
+                    style: { width: "360px", top:0, right:0  },
+                });
             } else {
                 console.error(
-                    "erro ao matricular o aluno: ",
+                    "Erro ao matricular o aluno: ",
                     nomeAluno,
                     idCurso
                 );
+                notifications.show({
+                    color: "red",
+                    title: "Erro",
+                    message:
+                        "Ocorreu algum erro ao matrícular o aluno: " +
+                        nomeAluno,
+                    style: { width: "360px", top:0, right:0 },
+                });
             }
         });
-        event.preventDefault();
     };
-    const alterar = (event) => {
-        setNomeAluno(event.target.value);
-    };
-    const form = (
-        <form onSubmit={submit}>
-            <SelectMatricula
-                cursos={cursos}
-                setIdCurso={setIdCurso}
-            ></SelectMatricula>
-            <input
-                type="text"
-                name="nome"
-                id="nome"
-                onChange={alterar}
-                value={nomeAluno}
-            />
-            <input type="submit" disabled={idCurso === "" || nome === ""} name="submit" value="Submit" id="submit" />
-        </form>
-    );
 
-    return <div className="matricula-container">{form}</div>;
+    return (
+        <Paper shadow="sm" p="md" withBorder>
+            <Title order={3} mb="md">
+                Matricular em um Curso
+            </Title>
+            <form onSubmit={submit}>
+                <Stack>
+                    <SelectMatricula cursos={cursos} setIdCurso={setIdCurso} />
+                    <TextInput
+                        label="Nome do Aluno"
+                        placeholder="Digite o nome do aluno"
+                        value={nomeAluno}
+                        onChange={(event) =>
+                            setNomeAluno(event.currentTarget.value)
+                        }
+                    />
+                    <Button
+                        type="submit"
+                        disabled={idCurso === "" || nomeAluno === ""}
+                    >
+                        Matricular
+                    </Button>
+                </Stack>
+            </form>
+        </Paper>
+    );
 }
 
 export default Matricula;
