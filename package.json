@@ -5,7 +5,10 @@
   "main": "matricula.js",
   "scripts": {
     "test": "jest",
-    "api": "node api.js"
+    "api": "node api.js",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "repository": {
     "type": "git",

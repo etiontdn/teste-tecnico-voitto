@@ -2,7 +2,7 @@ const express = require("express");
 const ShortUniqueId = require("short-unique-id");
 const fs = require("fs");
 const app = express();
-const port = 3000;
+const port = 8080;
 
 // Gerador de Ids únicos:
 const uid = new ShortUniqueId({ length: 10 });
@@ -18,7 +18,7 @@ function novoId(obj) {
 
 function carregaCursos(res, callback) {
     //Carrega os cursos ou exibe um erro se não conseguir
-    fs.readFile("./cursos.json", function (err, data) {
+    fs.readFile("./public/cursos.json", function (err, data) {
         if (err) {
             return res
                 .status(500)
@@ -30,7 +30,7 @@ function carregaCursos(res, callback) {
 
 function salvaCursos(res, val, msg, msgErro) {
     //Salva os cursos ou exibe um erro definido se não conseguir
-    fs.writeFile("./cursos.json", val, (err) => {
+    fs.writeFile("./public/cursos.json", val, (err) => {
         if (err) {
             return res.status(500).send({ message: msgErro });
         }
@@ -40,7 +40,7 @@ function salvaCursos(res, val, msg, msgErro) {
 
 function carregaMatriculas(res, callback) {
     //Carrega as matrículas ou exibe um erro se não conseguir
-    fs.readFile("./matriculas.json", function (err, data) {
+    fs.readFile("./public/matriculas.json", function (err, data) {
         if (err) {
             return res
                 .status(500)
@@ -52,7 +52,7 @@ function carregaMatriculas(res, callback) {
 
 function salvaMatriculas(res, val, msg, msgErro) {
     //Salva as matrículas ou exibe um erro se não conseguir
-    fs.writeFile("./matriculas.json", val, (err) => {
+    fs.writeFile("./public/matriculas.json", val, (err) => {
         if (err) {
             return res.status(500).send({ message: msgErro });
         }
@@ -185,7 +185,7 @@ app.delete("/cursos/:id", (req, res) => {
             );
 
             fs.writeFile(
-                "./matriculas.json",
+                "./public/matriculas.json",
                 JSON.stringify(matriculasRestantes),
                 (err) => {
                     if (err) {
