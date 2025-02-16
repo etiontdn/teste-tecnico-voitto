@@ -268,5 +268,5 @@ app.get("/matriculas/:idCurso", (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`app.js localhost:${port}`);
+    console.log(`api.js localhost:${port}`);
 });
